@@ -37,7 +37,7 @@
                               <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                           </rowConstraints>
                            <children>
-                              <Label alignment="CENTER" contentDisplay="CENTER" text="Stock Control" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                              <Label fx:id="label" alignment="CENTER" contentDisplay="CENTER" text="Stock Control" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
                                  <font>
                                     <Font name="System Bold" size="26.0" />
                                  </font>
@@ -81,7 +81,7 @@
                                     <Cursor fx:constant="HAND" />
                                  </cursor>
                               </Button>
-                              <Button fx:id="deleteButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="DELETE" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                              <Button fx:id="deleteButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" stylesheets="@style.css" text="DELETE" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
                                  <font>
                                     <Font size="18.0" />
                                  </font>
@@ -114,10 +114,11 @@
                      <children>
                         <TableView fx:id="tableview" layoutX="228.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #545454;" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
                           <columns>
-                            <TableColumn fx:id="productImage" prefWidth="155.66668701171875" text="Product Image" />
-                            <TableColumn fx:id="productID" minWidth="0.0" prefWidth="113.0" text="Product ID" />
-                              <TableColumn fx:id="productName" minWidth="0.0" prefWidth="163.0" text="Product Name" />
-                              <TableColumn fx:id="productQuantity" minWidth="0.0" prefWidth="167.0" text="Product Quantity" />
+                            <TableColumn id="productImageColumn" fx:id="productImage" prefWidth="139.33334350585938" text="Product Image" />
+                            <TableColumn id="productIdColumn" fx:id="productID" minWidth="0.0" prefWidth="86.00003051757812" text="Product ID" />
+                              <TableColumn id="productNameColumn" fx:id="productName" minWidth="0.0" prefWidth="153.6666259765625" text="Product Name" />
+                              <TableColumn id="productQuantityColumn" fx:id="productQuantity" minWidth="0.0" prefWidth="114.0" text="Product Quantity" />
+                              <TableColumn id="Price" fx:id="Price" prefWidth="101.0" text="Price" />
                           </columns>
                         </TableView>
                      </children>

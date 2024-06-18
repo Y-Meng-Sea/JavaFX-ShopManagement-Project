@@ -7,11 +7,16 @@ public class StoreData {
     private Integer productID ;
     private String productName;
     private Integer productQuantity;
-    public StoreData(ImageView productImage,int productID,String productName,int productQuantity){
+    private String priceAsCurrency;
+
+
+    public StoreData(ImageView productImage, int productID, String productName, int productQuantity, String priceAsCurrency){
         this.productImage = productImage;
         this.productID = productID;
         this.productName = productName;
         this.productQuantity = productQuantity;
+//        this.Price = Price;
+        this.priceAsCurrency = priceAsCurrency;
     }
 
     public ImageView getProductImage() {
@@ -44,5 +49,12 @@ public class StoreData {
 
     public void setProductQuantity(int productQuantity) {
         this.productQuantity = productQuantity;
+    }
+
+    public void setPriceAsCurrency(String priceAsCurrency){
+        this.priceAsCurrency = priceAsCurrency;
+    }
+    public String getPriceAsCurrency(){
+        return this.priceAsCurrency;
     }
 }

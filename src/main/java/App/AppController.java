@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -15,6 +16,7 @@ import java.io.ByteArrayInputStream;
 import java.sql.*;
 
 public class AppController {
+    public Label label;
     @FXML
     private Button homeButton;
     @FXML
@@ -39,7 +41,8 @@ public class AppController {
     private TableColumn<StoreData,String> productName;
     @FXML
     private TableColumn<StoreData,Integer> productQuantity;
-
+    @FXML
+    private TableColumn<StoreData,Double> Price;
     private ObservableList<StoreData> productList = FXCollections.observableArrayList();
 
 
@@ -51,7 +54,7 @@ public class AppController {
         productName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         productQuantity.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productImage.setCellValueFactory(new PropertyValueFactory<>("productImage"));
-
+        Price.setCellValueFactory(new PropertyValueFactory<>("priceAsCurrency"));
         try {
             connectDatabase();
         } catch (SQLException e) {
@@ -72,13 +75,16 @@ public class AppController {
             int productIdFromSQL = resultSet.getInt("productID");
             String productNameFromSQL = resultSet.getString("productName");
             int productQuantityFromSQL = resultSet.getInt("productQuantity");
+            double priceFromSQL = resultSet.getDouble("Price");
+            String ConvertPrice = Double.toString(priceFromSQL);
+            String PriceAsCurrency = ConvertPrice +"$";
             byte[] ByteImageFromSQL = resultSet.getBytes("productImage");
             //convert to image
             Image productImage = new Image(new ByteArrayInputStream(ByteImageFromSQL));
             ImageView productImageView = new ImageView(productImage);
             productImageView.setFitHeight(50);
             productImageView.setFitWidth(50);
-            productList.add(new StoreData(productImageView,productIdFromSQL,productNameFromSQL,productQuantityFromSQL));
+            productList.add(new StoreData(productImageView,productIdFromSQL,productNameFromSQL,productQuantityFromSQL,PriceAsCurrency));
         }
     }
 
