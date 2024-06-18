@@ -116,7 +116,7 @@
                           <columns>
                             <TableColumn fx:id="productImage" prefWidth="155.66668701171875" text="Product Image" />
                             <TableColumn fx:id="productID" minWidth="0.0" prefWidth="113.0" text="Product ID" />
-                              <TableColumn fx:id="ṕroductName" minWidth="0.0" prefWidth="163.0" text="Product Name" />
+                              <TableColumn fx:id="productName" minWidth="0.0" prefWidth="163.0" text="Product Name" />
                               <TableColumn fx:id="productQuantity" minWidth="0.0" prefWidth="167.0" text="Product Quantity" />
                           </columns>
                         </TableView>
