@@ -4,9 +4,9 @@ import javafx.scene.image.ImageView;
 
 public class StoreData {
     private ImageView productImage;
-    private int productID ;
+    private Integer productID ;
     private String productName;
-    private int productQuantity;
+    private Integer productQuantity;
     public StoreData(ImageView productImage,int productID,String productName,int productQuantity){
         this.productImage = productImage;
         this.productID = productID;
