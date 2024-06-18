@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.text.Font?>
+
+<StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1">
+   <children>
+      <BorderPane prefHeight="200.0" prefWidth="200.0">
+         <left>
+            <AnchorPane prefHeight="600.0" prefWidth="223.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane layoutX="12.0" layoutY="160.0" prefHeight="600.0" prefWidth="223.0" style="-fx-background-color: #2B2B2B;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <GridPane alignment="BOTTOM_RIGHT" layoutX="12.0" layoutY="204.0" prefHeight="600.0" prefWidth="223.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="5.0" prefHeight="5.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <Label alignment="CENTER" contentDisplay="CENTER" text="Stock Control" textAlignment="CENTER" textFill="WHITE" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font name="System Bold" size="26.0" />
+                                 </font>
+                              </Label>
+                              <Button fx:id="homeButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="HOME" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                                 <graphic>
+                                    <FontAwesomeIcon fill="WHITE" glyphName="HOME">
+                                       <font>
+                                          <Font size="14.0" />
+                                       </font>
+                                    </FontAwesomeIcon>
+                                 </graphic>
+                              </Button>
+                              <Button fx:id="statusButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="STATUS" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="2" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="addButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="ADD" textFill="#f8f8f8" GridPane.halignment="CENTER" GridPane.rowIndex="3" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="updateButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="UPDATE" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="4" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Button fx:id="deleteButton" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" style="-fx-background-color: #545454;" text="DELETE" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="5" GridPane.valignment="CENTER">
+                                 <font>
+                                    <Font size="18.0" />
+                                 </font>
+                                 <cursor>
+                                    <Cursor fx:constant="HAND" />
+                                 </cursor>
+                              </Button>
+                              <Pane prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="6">
+                                 <children>
+                                    <Button layoutX="4.0" layoutY="74.0" mnemonicParsing="false" style="-fx-background-color: #545454;" textFill="WHITE">
+                                       <graphic>
+                                          <FontAwesomeIcon fx:id="aboutButton" fill="WHITE" glyphName="EXCLAMATION" text="" />
+                                       </graphic>
+                                       <cursor>
+                                          <Cursor fx:constant="HAND" />
+                                       </cursor>
+                                    </Button>
+                                 </children>
+                              </Pane>
+                           </children>
+                        </GridPane>
+                     </children>
+                  </AnchorPane>
+               </children></AnchorPane>
+         </left>
+         <center>
+            <AnchorPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
+               <children>
+                  <AnchorPane layoutX="208.0" layoutY="200.0" prefHeight="600.0" prefWidth="677.0" style="-fx-background-color: #1D1D1D;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <TableView fx:id="tableview" layoutX="228.0" layoutY="200.0" prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: #545454;" AnchorPane.bottomAnchor="100.0" AnchorPane.leftAnchor="40.0" AnchorPane.rightAnchor="40.0" AnchorPane.topAnchor="100.0">
+                          <columns>
+                            <TableColumn fx:id="productImage" prefWidth="155.66668701171875" text="Product Image" />
+                            <TableColumn fx:id="productID" minWidth="0.0" prefWidth="113.0" text="Product ID" />
+                              <TableColumn fx:id="ṕroductName" minWidth="0.0" prefWidth="163.0" text="Product Name" />
+                              <TableColumn fx:id="productQuantity" minWidth="0.0" prefWidth="167.0" text="Product Quantity" />
+                          </columns>
+                        </TableView>
+                     </children>
+                  </AnchorPane>
+               </children>
+            </AnchorPane>
+         </center>
+      </BorderPane>
+   </children>
+</StackPane>
