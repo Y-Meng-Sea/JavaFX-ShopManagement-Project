@@ -4,18 +4,30 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.Button;
-import javafx.scene.control.Label;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.layout.AnchorPane;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
-import java.io.ByteArrayInputStream;
+import java.io.*;
 import java.sql.*;
 
 public class AppController {
+    @FXML
+    private Button inputImage;
+    @FXML
+    private ImageView imagepreview;
+    @FXML
+    private TextField inputId;
+    @FXML
+    private TextField inputName;
+    @FXML
+    private TextField inputQuantity;
+    @FXML
+    private TextField inputPrice;
     public Label label;
     @FXML
     private Button homeButton;
@@ -27,8 +39,6 @@ public class AppController {
     private Button updateButton;
     @FXML
     private Button deleteButton;
-//    @FXML
-//    private Button aboutButton;
     @FXML
     private FontAwesomeIcon aboutButton;
     @FXML
@@ -43,9 +53,12 @@ public class AppController {
     private TableColumn<StoreData,Integer> productQuantity;
     @FXML
     private TableColumn<StoreData,Double> Price;
+
+    @FXML
+    private AnchorPane statusPane;
+    @FXML
+    private AnchorPane addPane;
     private ObservableList<StoreData> productList = FXCollections.observableArrayList();
-
-
 
 
     @FXML
@@ -55,15 +68,36 @@ public class AppController {
         productQuantity.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productImage.setCellValueFactory(new PropertyValueFactory<>("productImage"));
         Price.setCellValueFactory(new PropertyValueFactory<>("priceAsCurrency"));
+
+        inputImage.setOnAction(e->{
+            FileChooseer();
+        });
+
         try {
             connectDatabase();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
         tableview.setItems(productList);
-    }
 
+        statusButton.setOnAction(e->{
+            statusPane.setVisible(true);
+            addPane.setVisible(false);
+        });
+        addButton.setOnAction(e->{
+            addPane.setVisible(true);
+            statusPane.setVisible(false);
+        });
+    }
+    public void FileChooseer(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
+        File file = fileChooser.showOpenDialog(new Stage());
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            imagepreview.setImage(image);
+        }
+    }
     public void connectDatabase() throws SQLException {
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
@@ -88,5 +122,27 @@ public class AppController {
         }
     }
 
+
+    public void addProductToDatabase() throws SQLException {
+        int productid = Integer.parseInt(inputId.getText());
+        String productname = inputName.getText();
+        int productquantity = Integer.parseInt(inputQuantity.getText());
+        double productprice = Double.parseDouble(inputPrice.getText());
+
+        String url = "jdbc:mysql://localhost/storedata";
+        String user = "root";
+        String password = "Pa$$w0rd";
+        Connection connection = DriverManager.getConnection(url,user,password);
+        String query = "INSERT INTO stock (productid, productname, productquantity, productprice) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setInt(2, productid);
+        preparedStatement.setString(3, productname);
+        preparedStatement.setInt(4, productquantity);
+        preparedStatement.setDouble(5, productprice);
+
+        preparedStatement.close();
+        connection.close();
+    }
 
 }
