@@ -4,7 +4,6 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -17,6 +16,7 @@ import java.io.*;
 import java.sql.*;
 
 public class AppController {
+
     @FXML
     private Button inputImage;
     @FXML
@@ -33,6 +33,8 @@ public class AppController {
     @FXML
     private Button homeButton;
     @FXML
+    private Button welcomeButton;
+    @FXML
     private Button statusButton;
     @FXML
     private Button addButton;
@@ -42,6 +44,10 @@ public class AppController {
     private Button deleteButton;
     @FXML
     private FontAwesomeIcon aboutButton;
+    @FXML
+    private Button GotoConsoleButton;
+    @FXML
+    private Button goToShopButton;
     @FXML
     private TableView<StoreData> tableview ;
     @FXML
@@ -59,9 +65,21 @@ public class AppController {
     @FXML
     private Button caccelButton;
     @FXML
+    private AnchorPane homePane;
+    @FXML
+    private AnchorPane consolePane;
+    @FXML
+    private AnchorPane navbarPane;
+    @FXML
     private AnchorPane statusPane;
     @FXML
     private AnchorPane addPane;
+    @FXML
+    private AnchorPane updatePane;
+    @FXML
+    private AnchorPane deletePane;
+    @FXML
+    private AnchorPane shopPane;
     private ObservableList<StoreData> productList = FXCollections.observableArrayList();
     public File getfile;
 
@@ -84,6 +102,7 @@ public class AppController {
                 throw new RuntimeException(ex);
             }
         });
+
         caccelButton.setOnAction(e->{
             inputId.clear();
             inputName.clear();
@@ -92,6 +111,7 @@ public class AppController {
             imagepreview.setImage(null);
 
         });
+
         inputImage.setOnAction(e->{
             try {
                 FileChooseer();
@@ -109,14 +129,64 @@ public class AppController {
         }
         tableview.setItems(productList);
 
+
+        homeButton.setOnAction(e->{
+            homePane.setVisible(true);
+            navbarPane.setVisible(true);
+            shopPane.setVisible(false);
+            consolePane.setVisible(false);
+            statusPane.setVisible(false);
+            addPane.setVisible(false);
+            updatePane.setVisible(false);
+            deletePane.setVisible(false);
+        });
+        welcomeButton.setOnAction(e->{
+            homePane.setVisible(true);
+            shopPane.setVisible(false);
+        });
+        GotoConsoleButton.setOnAction(e->{
+            statusPane.setVisible(true);
+            shopPane.setVisible(false);
+            consolePane.setVisible(true);
+            navbarPane.setVisible(false);
+        });
+        goToShopButton.setOnAction(e->{
+            shopPane.setVisible(true);
+            homePane.setVisible(false);
+        });
         statusButton.setOnAction(e->{
             statusPane.setVisible(true);
+            homePane.setVisible(false);
+            shopPane.setVisible(false);
             addPane.setVisible(false);
+            updatePane.setVisible(false);
+            deletePane.setVisible(false);
         });
         addButton.setOnAction(e->{
             addPane.setVisible(true);
+            shopPane.setVisible(false);
+            homePane.setVisible(false);
             statusPane.setVisible(false);
+            updatePane.setVisible(false);
+            deletePane.setVisible(false);
         });
+        updateButton.setOnAction(e->{
+            updatePane.setVisible(true);
+            shopPane.setVisible(false);
+            homePane.setVisible(false);
+            addPane.setVisible(false);
+            statusPane.setVisible(false);
+            deletePane.setVisible(false);
+        });
+        deleteButton.setOnAction(e->{
+            deletePane.setVisible(true);
+            shopPane.setVisible(false);
+            homePane.setVisible(false);
+            addPane.setVisible(false);
+            statusPane.setVisible(false);
+            updatePane.setVisible(false);
+        });
+
     }
 
     public void addProductToDatabase(File file) throws SQLException, IOException {
@@ -139,6 +209,16 @@ public class AppController {
         preparedStatement.setInt(4, productquantity);
         preparedStatement.setDouble(5, productprice);
         preparedStatement.executeUpdate();
+
+        // Add the new product to the ObservableList
+        Image productImage = new Image(new ByteArrayInputStream(imageBytes));
+        ImageView productImageView = new ImageView(productImage);
+        productImageView.setFitHeight(50);
+        productImageView.setFitWidth(50);
+        String ConvertPrice = Double.toString(productprice);
+        String PriceAsCurrency = ConvertPrice +"$";
+        StoreData newProduct = new StoreData(productImageView, productid, productname, productquantity, PriceAsCurrency);
+        productList.add(newProduct);
 
         preparedStatement.close();
         connection.close();

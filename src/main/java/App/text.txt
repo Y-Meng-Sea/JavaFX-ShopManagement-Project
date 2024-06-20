@@ -1,0 +1,10 @@
+selectProductId
+selectProductName
+updateImageView
+updateProductId
+updateProductName
+updateProductQuantity
+updateProductPrice
+UpdateToSQLButton
+cancelUpdateButton
+searchButton

@@ -16,6 +16,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <StackPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="900.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="App.AppController">
    <children>
@@ -23,7 +24,7 @@
          <left>
             <AnchorPane prefHeight="600.0" prefWidth="223.0" BorderPane.alignment="CENTER">
                <children>
-                  <AnchorPane layoutX="12.0" layoutY="160.0" prefHeight="600.0" prefWidth="223.0" style="-fx-background-color: #2B2B2B;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="consolePane" layoutX="12.0" layoutY="160.0" prefHeight="600.0" prefWidth="223.0" style="-fx-background-color: #2B2B2B;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <GridPane alignment="BOTTOM_RIGHT" layoutX="12.0" layoutY="204.0" prefHeight="600.0" prefWidth="223.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0">
                           <columnConstraints>
@@ -107,6 +108,41 @@
                         </GridPane>
                      </children>
                   </AnchorPane>
+                  <AnchorPane fx:id="navbarPane" layoutX="12.0" layoutY="153.0" prefHeight="600.0" prefWidth="223.0" style="-fx-background-color: #2B2B2B;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Button fx:id="welcomeButton" layoutX="22.0" layoutY="193.0" maxHeight="50.0" maxWidth="180.0" minHeight="-Infinity" minWidth="-Infinity" mnemonicParsing="false" prefHeight="39.0" prefWidth="177.0" style="-fx-background-color: #545454;" text="HOME" textFill="WHITE" GridPane.halignment="CENTER" GridPane.rowIndex="1" GridPane.valignment="CENTER">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                           <graphic>
+                              <FontAwesomeIcon fill="WHITE" glyphName="HOME">
+                                 <font>
+                                    <Font size="14.0" />
+                                 </font>
+                              </FontAwesomeIcon>
+                           </graphic>
+                        </Button>
+                        <Button fx:id="GotoConsoleButton" alignment="CENTER" layoutX="21.0" layoutY="338.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="175.0" style="-fx-background-color: #545454;" text="Console" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Button fx:id="goToShopButton" alignment="CENTER" layoutX="20.0" layoutY="265.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="175.0" style="-fx-background-color: #545454;" text="Shop" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                     </children>
+                  </AnchorPane>
                </children></AnchorPane>
          </left>
          <center>
@@ -123,9 +159,14 @@
                               <TableColumn id="Price" fx:id="Price" prefWidth="87.0" text="Price" />
                           </columns>
                         </TableView>
+                        <Label layoutX="40.0" layoutY="65.0" text="STATUS" textFill="WHITE">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="addPane" prefHeight="600.0" prefWidth="677.0" style="-fx-background-color: #1D1D1D;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="addPane" prefHeight="600.0" prefWidth="677.0" style="-fx-background-color: #1D1D1D;" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label layoutX="61.0" layoutY="105.0" text="Product Image :" textFill="WHITE">
                            <font>
@@ -201,6 +242,135 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
+                        <Label layoutX="59.0" layoutY="53.0" text="ADD PRODUCT" textFill="#6de46f">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="updatePane" layoutX="153.0" layoutY="261.0" prefHeight="600.0" prefWidth="677.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label layoutX="48.0" layoutY="35.0" text="UPDATE THE EXISTING PRODUCT" textFill="#eee128">
+                           <font>
+                              <Font name="System Bold" size="24.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="53.0" layoutY="93.0" text="Product ID" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="51.0" layoutY="146.0" text="Product Name" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="selectProductId" layoutX="228.0" layoutY="86.0" promptText="Product ID">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="selectProductName" layoutX="226.0" layoutY="143.0" promptText="ProductName">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="searchButton" layoutX="52.0" layoutY="212.0" mnemonicParsing="false" style="-fx-background-color: #545454;" text="Search" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </Button>
+                        <Label layoutX="52.0" layoutY="303.0" text="New product Image :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="54.0" layoutY="360.0" text="New product ID :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="54.0" layoutY="409.0" text="New product Name :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="54.0" layoutY="457.0" text="New product Quantity : " textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Label layoutX="56.0" layoutY="504.0" text="New product Price :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <Pane layoutX="272.0" layoutY="262.0" prefHeight="83.0" prefWidth="102.0" style="-fx-background-color: white;">
+                           <children>
+                              <ImageView fx:id="updateImageView" fitHeight="87.0" fitWidth="108.0" layoutX="-4.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </Pane>
+                        <TextField fx:id="updateProductQuantity" layoutX="272.0" layoutY="458.0" promptText="New Quantity">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="updateProductPrice" layoutX="272.0" layoutY="505.0" promptText="New Price">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="updateProductId" layoutX="272.0" layoutY="361.0" promptText="New ID">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <TextField fx:id="updateProductName" layoutX="272.0" layoutY="410.0" promptText="New Name">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Button fx:id="UpdateToSQLButton" layoutX="272.0" layoutY="555.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="81.0" style="-fx-background-color: #545454;" text="UPDATE " textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                        <Button fx:id="cancelUpdateButton" layoutX="364.0" layoutY="555.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #545454;" text="Cancel" textFill="WHITE">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </Button>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="deletePane" layoutX="169.0" layoutY="219.0" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label layoutX="68.0" layoutY="39.0" text="DELETE ANY PRODUCT" textFill="#ee2c2c">
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="shopPane" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label layoutX="153.0" layoutY="66.0" text="Wellcome to shop , buy something as you wish!!" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                     </children>
+                  </AnchorPane>
+                  <AnchorPane fx:id="homePane" layoutX="239.0" layoutY="215.0" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Text fill="WHITE" layoutX="48.0" layoutY="258.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Wellcome to the out Shop Management program ! this program is made for allowing the shop owner can easiely manipulate their stock :)" textAlignment="CENTER" wrappingWidth="566.0084228515625">
+                           <font>
+                              <Font name="System Bold Italic" size="24.0" />
+                           </font>
+                        </Text>
                      </children>
                   </AnchorPane>
                </children>
