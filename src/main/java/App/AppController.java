@@ -4,6 +4,7 @@ import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
@@ -53,24 +54,52 @@ public class AppController {
     private TableColumn<StoreData,Integer> productQuantity;
     @FXML
     private TableColumn<StoreData,Double> Price;
-
+    @FXML
+    private Button addProductButton;
+    @FXML
+    private Button caccelButton;
     @FXML
     private AnchorPane statusPane;
     @FXML
     private AnchorPane addPane;
     private ObservableList<StoreData> productList = FXCollections.observableArrayList();
-
+    public File getfile;
 
     @FXML
     public void initialize(){
+
         productID.setCellValueFactory(new PropertyValueFactory<>("productID"));
         productName.setCellValueFactory(new PropertyValueFactory<>("productName"));
         productQuantity.setCellValueFactory(new PropertyValueFactory<>("productQuantity"));
         productImage.setCellValueFactory(new PropertyValueFactory<>("productImage"));
         Price.setCellValueFactory(new PropertyValueFactory<>("priceAsCurrency"));
 
+        addProductButton.setOnAction(e->{
+            try {
+                addProductToDatabase(getfile);
+
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        caccelButton.setOnAction(e->{
+            inputId.clear();
+            inputName.clear();
+            inputPrice.clear();
+            inputQuantity.clear();
+            imagepreview.setImage(null);
+
+        });
         inputImage.setOnAction(e->{
-            FileChooseer();
+            try {
+                FileChooseer();
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
         });
 
         try {
@@ -89,15 +118,38 @@ public class AppController {
             statusPane.setVisible(false);
         });
     }
-    public void FileChooseer(){
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
-        File file = fileChooser.showOpenDialog(new Stage());
-        if (file != null) {
-            Image image = new Image(file.toURI().toString());
-            imagepreview.setImage(image);
-        }
+
+    public void addProductToDatabase(File file) throws SQLException, IOException {
+        byte[] imageBytes = readImage(file);
+        int productid = Integer.parseInt(inputId.getText());
+        String productname = inputName.getText();
+        int productquantity = Integer.parseInt(inputQuantity.getText());
+        double productprice = Double.parseDouble(inputPrice.getText());
+
+        String url = "jdbc:mysql://localhost/storedata";
+        String user = "root";
+        String password = "Pa$$w0rd";
+        Connection connection = DriverManager.getConnection(url,user,password);
+        String query = "INSERT INTO stock (productimage,productid, productname, productquantity,price) VALUES (?, ?, ?, ?, ?)";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        preparedStatement.setBytes(1,imageBytes);
+        preparedStatement.setInt(2, productid);
+        preparedStatement.setString(3, productname);
+        preparedStatement.setInt(4, productquantity);
+        preparedStatement.setDouble(5, productprice);
+        preparedStatement.executeUpdate();
+
+        preparedStatement.close();
+        connection.close();
+
+        inputId.clear();
+        inputName.clear();
+        inputPrice.clear();
+        inputQuantity.clear();
+        imagepreview.setImage(null);
     }
+
     public void connectDatabase() throws SQLException {
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
@@ -122,27 +174,24 @@ public class AppController {
         }
     }
 
-
-    public void addProductToDatabase() throws SQLException {
-        int productid = Integer.parseInt(inputId.getText());
-        String productname = inputName.getText();
-        int productquantity = Integer.parseInt(inputQuantity.getText());
-        double productprice = Double.parseDouble(inputPrice.getText());
-
-        String url = "jdbc:mysql://localhost/storedata";
-        String user = "root";
-        String password = "Pa$$w0rd";
-        Connection connection = DriverManager.getConnection(url,user,password);
-        String query = "INSERT INTO stock (productid, productname, productquantity, productprice) VALUES (?, ?, ?, ?, ?)";
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
-
-        preparedStatement.setInt(2, productid);
-        preparedStatement.setString(3, productname);
-        preparedStatement.setInt(4, productquantity);
-        preparedStatement.setDouble(5, productprice);
-
-        preparedStatement.close();
-        connection.close();
+    public void FileChooseer()throws IOException,SQLException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
+        File file = fileChooser.showOpenDialog(new Stage());
+        readImage(file);
+        getfile = file ;
+        if (file != null) {
+            Image image = new Image(file.toURI().toString());
+            imagepreview.setImage(image);
+        }
+    }
+    // read image to BLOB (binary large object)
+    public byte[] readImage(File file)throws IOException{
+        FileInputStream fileInputStream = new FileInputStream(file);
+        byte[] byteArray = new byte[(int) file.length()];
+        fileInputStream.read(byteArray);
+        fileInputStream.close();
+        return byteArray;
     }
 
 }

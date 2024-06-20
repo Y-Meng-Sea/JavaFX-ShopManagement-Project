@@ -180,7 +180,7 @@
                               <Font size="24.0" />
                            </font>
                         </TextField>
-                        <Button layoutX="333.0" layoutY="528.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="121.0" style="-fx-background-color: #545454;" text="Add" textFill="WHITE">
+                        <Button fx:id="addProductButton" layoutX="333.0" layoutY="528.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="121.0" style="-fx-background-color: #545454;" text="Add" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -188,7 +188,7 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Button layoutX="477.0" layoutY="528.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="121.0" style="-fx-background-color: #545454;" text="Cancel" textFill="WHITE">
+                        <Button fx:id="caccelButton" layoutX="477.0" layoutY="528.0" mnemonicParsing="false" prefHeight="39.0" prefWidth="121.0" style="-fx-background-color: #545454;" text="Cancel" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
