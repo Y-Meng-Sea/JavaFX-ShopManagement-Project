@@ -4,6 +4,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 
 import java.io.ByteArrayInputStream;
+
 import java.sql.*;
 
 public class Updatedata {
@@ -11,11 +12,21 @@ public class Updatedata {
     private int productID;
     private String productName;
     private int productQuantity;
+    private double productPrice;
     private ImageView imageView;
 
      private String searchID ;
      private String searchName;
 
+//     private int newProductID;
+//     private String newProductName;
+//     private int newProductQuantity;
+//
+//     private double newProductPrice;
+//
+//     private ImageView newImage;
+
+    public Updatedata(){};
     public Updatedata(String searchID,String searchName){
         this.searchName = searchName;
         this.searchID = searchID;
@@ -32,6 +43,8 @@ public class Updatedata {
              query = "SELECT *FROM stock WHERE productID = " + searchID;
         } else if (this.searchID == "" && this.searchName != null) {
              query = "SELECT *FROM stock WHERE productName = " + "\""+searchName+"\"";
+        }else if (this.searchID != ""&& this.searchName !=""){
+             query ="SELECT * FROM stock WHERE productID =" +"\"" + searchID + "\""+ "AND productName=" +"\"" + searchName + "\"" ;
         }
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery(query);
@@ -40,18 +53,42 @@ public class Updatedata {
             String productName = resultSet.getString("productName");
             int productQuantity = resultSet.getInt("productQuantity");
             byte[] bytesImage = resultSet.getBytes("productImage");
+            double productPrice = resultSet.getDouble("Price");
             // convert image
             Image byteToImage = new Image(new ByteArrayInputStream(bytesImage));
             ImageView imageView = new ImageView(byteToImage);
             imageView.setFitWidth(50);
             imageView.setFitHeight(50);
             // assing to variable
+            this.setProductPrice(productPrice);
             this.setProductID(productID);
             this.setProductName(productName);
             this.setImageView(imageView);
             this.setProductQuantity(productQuantity);
         }
     }
+
+    public void NewProductUpdate(byte[] newImage,int newProductID, String newProductName,int newProductQuantity , double newProductPrice) throws SQLException {
+        String url = "jdbc:mysql://localhost/storedata";
+        String user = "root";
+        String password = "Pa$$w0rd";
+        Connection connection = DriverManager.getConnection(url,user,password);
+        String query = "UPDATE stock SET productImage = ?, productID = ?, productName = ?, productQuantity = ?, Price = ? WHERE productID = ?";
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        preparedStatement.setBytes(1, newImage); // Assuming newImage is a byte array
+        preparedStatement.setInt(2, newProductID);
+        preparedStatement.setString(3, newProductName);
+        preparedStatement.setInt(4, newProductQuantity);
+        preparedStatement.setDouble(5, newProductPrice);
+        preparedStatement.setInt(6, 8); // Assuming 8 is the ID of the product to update
+        preparedStatement.executeUpdate();
+
+
+
+
+    }
+
+
 
     public void setProductID(int productID) {
         this.productID = productID;
@@ -68,7 +105,11 @@ public class Updatedata {
     public void setImageView(ImageView imageView) {
         this.imageView = imageView;
     }
+    public void setProductPrice(double productPrice){
+        this.productPrice = productPrice;
+    }
 
+    public double getProductPrice(){return  this.productPrice;}
     public String getProductName(){
         return this.productName;
     }
@@ -82,5 +123,19 @@ public class Updatedata {
         return this.imageView;
     }
 
+    public String getSearchID() {
+        return searchID;
+    }
 
+    public void setSearchID(String searchID) {
+        this.searchID = searchID;
+    }
+
+    public String getSearchName() {
+        return searchName;
+    }
+
+    public void setSearchName(String searchName) {
+        this.searchName = searchName;
+    }
 }

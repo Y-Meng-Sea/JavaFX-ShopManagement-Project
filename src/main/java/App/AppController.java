@@ -11,7 +11,6 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.*;
 import java.sql.*;
 
@@ -80,8 +79,32 @@ public class AppController {
     private AnchorPane deletePane;
     @FXML
     private AnchorPane shopPane;
+    @FXML
+    private TextField selectProductId;
+    @FXML
+    private TextField selectProductName;
+    @FXML
+    private Button searchButton;
+    @FXML
+    private Button UpdateToSQLButton;
+    @FXML
+    private Button cancelUpdateButton;
     private ObservableList<StoreData> productList = FXCollections.observableArrayList();
     public File getfile;
+
+    // update section
+    @FXML
+    private TextField updateProductId;
+    @FXML
+    private TextField updateProductName;
+    @FXML
+    private TextField updateProductQuantity;
+    @FXML
+    private TextField updateProductPrice;
+    @FXML
+    private ImageView updateImageView;
+    @FXML
+    private Button updateImageButton;
 
     @FXML
     public void initialize(){
@@ -92,6 +115,32 @@ public class AppController {
         productImage.setCellValueFactory(new PropertyValueFactory<>("productImage"));
         Price.setCellValueFactory(new PropertyValueFactory<>("priceAsCurrency"));
 
+        searchButton.setOnAction(e->{
+            try {
+                updateExistingProduct();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        UpdateToSQLButton.setOnAction(e->{
+            try {
+                addNewUpdate(getfile);
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        cancelUpdateButton.setOnAction(e->{
+            updateImageView.setImage(null);
+
+            updateProductId.clear();
+            updateProductName.clear();
+            updateProductPrice.clear();
+            updateProductQuantity.clear();
+        });
         addProductButton.setOnAction(e->{
             try {
                 addProductToDatabase(getfile);
@@ -103,6 +152,7 @@ public class AppController {
             }
         });
 
+        // the
         caccelButton.setOnAction(e->{
             inputId.clear();
             inputName.clear();
@@ -111,7 +161,7 @@ public class AppController {
             imagepreview.setImage(null);
 
         });
-
+// the choose image in the add product section
         inputImage.setOnAction(e->{
             try {
                 FileChooseer();
@@ -122,6 +172,27 @@ public class AppController {
             }
         });
 
+        // update the image in the update section
+        updateImageButton.setOnAction(e->{
+            try {
+                FileChooser fileChooser = new FileChooser();
+                fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
+                File file = fileChooser.showOpenDialog(new Stage());
+                readImage(file);
+                getfile = file ;
+                if (file != null) {
+                    Image image = new Image(file.toURI().toString());
+                    updateImageView.setImage(image);
+                }
+            } catch (IOException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+
+
+
+// connect to database and show the product to the tableview
+
         try {
             connectDatabase();
         } catch (SQLException e) {
@@ -130,6 +201,7 @@ public class AppController {
         tableview.setItems(productList);
 
 
+        // nav bar button section
         homeButton.setOnAction(e->{
             homePane.setVisible(true);
             navbarPane.setVisible(true);
@@ -140,6 +212,7 @@ public class AppController {
             updatePane.setVisible(false);
             deletePane.setVisible(false);
         });
+
         welcomeButton.setOnAction(e->{
             homePane.setVisible(true);
             shopPane.setVisible(false);
@@ -149,6 +222,7 @@ public class AppController {
             shopPane.setVisible(false);
             consolePane.setVisible(true);
             navbarPane.setVisible(false);
+            homePane.setVisible(false);
         });
         goToShopButton.setOnAction(e->{
             shopPane.setVisible(true);
@@ -189,6 +263,72 @@ public class AppController {
 
     }
 
+    public void updateExistingProduct() throws SQLException, IOException {
+        String notField = "";
+        String searchId = selectProductId.getText();
+        String searchName = selectProductName.getText();
+
+        Updatedata updatedata = new Updatedata();
+
+        if(searchId.equals("") && !searchName.equals("")){
+            updatedata = new Updatedata(notField,searchName);
+            updatedata.updatedata();
+            updateProductId.setText(String.valueOf(updatedata.getProductID()));
+            updateProductName.setText(updatedata.getProductName());
+            updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
+            updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
+            updateImageView.setImage(updatedata.getImageView().getImage());
+            selectProductName.clear();
+            selectProductId.clear();
+        }else if(!searchId.equals("")&& searchName.equals("")){
+            updatedata = new Updatedata(searchId,notField);
+            updatedata.updatedata();
+            updateProductId.setText(String.valueOf(updatedata.getProductID()));
+            updateProductName.setText(updatedata.getProductName());
+            updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
+            updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
+            updateImageView.setImage(updatedata.getImageView().getImage());
+            selectProductName.clear();
+            selectProductId.clear();
+        }else if(!searchId.equals("")&&!searchName.equals("")){
+            try{
+                updatedata = new Updatedata(searchId,searchName);
+                updatedata.updatedata();
+                updateProductId.setText(String.valueOf(updatedata.getProductID()));
+                updateProductName.setText(updatedata.getProductName());
+                updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
+                updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
+                updateImageView.setImage(updatedata.getImageView().getImage());
+                selectProductName.clear();
+                selectProductId.clear();
+            }catch (NullPointerException nullPointerException){
+                Alert alert = new Alert(Alert.AlertType.WARNING);
+                alert.setTitle("product not found ");
+                alert.setContentText("There are no specific product match to that product ID or product Name we recommend just search using only ID or Name");
+                alert.show();
+            }
+        }
+
+    }
+
+    public void addNewUpdate(File file) throws IOException, SQLException {
+        Updatedata updatedata = new Updatedata();
+        // get new data from text field
+        int newProductId = Integer.parseInt(updateProductId.getText());
+        String newProductName = updateProductName.getText();
+        int newProductQuantity = Integer.parseInt(updateProductQuantity.getText());
+        double newProductPrice = Double.parseDouble(updateProductPrice.getText());
+        byte[] newImageBytes = readImage(file);
+        updatedata.NewProductUpdate(newImageBytes,newProductId,newProductName,newProductQuantity,newProductPrice);
+        connectDatabase();
+
+        updateProductId.clear();
+        updateProductName.clear();
+        updateProductQuantity.clear();
+        updateProductPrice.clear();
+        updateImageView.setImage(null);
+
+    }
     public void addProductToDatabase(File file) throws SQLException, IOException {
         byte[] imageBytes = readImage(file);
         int productid = Integer.parseInt(inputId.getText());
@@ -219,7 +359,6 @@ public class AppController {
         String PriceAsCurrency = ConvertPrice +"$";
         StoreData newProduct = new StoreData(productImageView, productid, productname, productquantity, PriceAsCurrency);
         productList.add(newProduct);
-
         preparedStatement.close();
         connection.close();
 
@@ -228,6 +367,10 @@ public class AppController {
         inputPrice.clear();
         inputQuantity.clear();
         imagepreview.setImage(null);
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Add new product succeed");
+        alert.setContentText("your product has been successfully added.");
+        alert.show();
     }
 
     public void connectDatabase() throws SQLException {

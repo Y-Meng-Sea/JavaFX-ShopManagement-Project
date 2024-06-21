@@ -249,7 +249,7 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="updatePane" layoutX="153.0" layoutY="261.0" prefHeight="600.0" prefWidth="677.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="updatePane" layoutX="153.0" layoutY="261.0" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label layoutX="48.0" layoutY="35.0" text="UPDATE THE EXISTING PRODUCT" textFill="#eee128">
                            <font>
@@ -309,9 +309,9 @@
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Pane layoutX="272.0" layoutY="262.0" prefHeight="83.0" prefWidth="102.0" style="-fx-background-color: white;">
+                        <Pane layoutX="272.0" layoutY="225.0" prefHeight="105.0" prefWidth="102.0" style="-fx-background-color: white;">
                            <children>
-                              <ImageView fx:id="updateImageView" fitHeight="87.0" fitWidth="108.0" layoutX="-4.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="updateImageView" fitHeight="109.0" fitWidth="108.0" layoutX="-3.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </Pane>
                         <TextField fx:id="updateProductQuantity" layoutX="272.0" layoutY="458.0" promptText="New Quantity">
@@ -343,6 +343,11 @@
                            <font>
                               <Font size="14.0" />
                            </font>
+                        </Button>
+                        <Button fx:id="updateImageButton" layoutX="272.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" style="-fx-background-color: #545454;" text="New Image" textFill="WHITE">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
                         </Button>
                      </children>
                   </AnchorPane>

@@ -6,11 +6,10 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.stage.Stage;
 import java.io.IOException;
-import java.sql.SQLException;
 
 public class App extends Application {
         @Override
-        public void start(Stage window) throws IOException, SQLException {
+        public void start(Stage window) throws IOException{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("App.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
             scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
@@ -18,10 +17,6 @@ public class App extends Application {
             window.getIcons().add(icon);
             window.setTitle("ShopManagement");
             window.setScene(scene);
-            Updatedata updatedata = new Updatedata( "","Sushi");
-            updatedata.updatedata();
-            System.out.println(updatedata.getProductName());
-
             window.setResizable(false);
             window.show();
         }

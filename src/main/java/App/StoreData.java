@@ -15,7 +15,6 @@ public class StoreData {
         this.productID = productID;
         this.productName = productName;
         this.productQuantity = productQuantity;
-//        this.Price = Price;
         this.priceAsCurrency = priceAsCurrency;
     }
 
