@@ -33,22 +33,35 @@ public class Updatedata {
 
     }
 
-    public void updatedata()throws SQLException {
+    public void updatedata() throws SQLException {
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
         String password = "Pa$$w0rd";
-        Connection connection = DriverManager.getConnection(url,user,password);
+        Connection connection = DriverManager.getConnection(url, user, password);
         String query = "";
-        if (this.searchID != null && this.searchName == ""){
-             query = "SELECT *FROM stock WHERE productID = " + searchID;
-        } else if (this.searchID == "" && this.searchName != null) {
-             query = "SELECT *FROM stock WHERE productName = " + "\""+searchName+"\"";
-        }else if (this.searchID != ""&& this.searchName !=""){
-             query ="SELECT * FROM stock WHERE productID =" +"\"" + searchID + "\""+ "AND productName=" +"\"" + searchName + "\"" ;
+        if (this.searchID != null && this.searchID.isEmpty() && !this.searchName.isEmpty()) {
+            query = "SELECT * FROM stock WHERE productName = ?";
+        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName.isEmpty()) {
+            query = "SELECT * FROM stock WHERE productID = ?";
+        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName != null && !this.searchName.isEmpty()) {
+            query = "SELECT * FROM stock WHERE productID = ? AND productName = ?";
+        } else {
+            throw new IllegalArgumentException("Either searchID or searchName must be provided.");
         }
-        Statement statement = connection.createStatement();
-        ResultSet resultSet = statement.executeQuery(query);
-        while (resultSet.next()){
+
+        PreparedStatement preparedStatement = connection.prepareStatement(query);
+
+        if (this.searchID != null && !this.searchID.isEmpty() && this.searchName.isEmpty()) {
+            preparedStatement.setInt(1, Integer.parseInt(this.searchID));
+        } else if (this.searchID == null && !this.searchName.isEmpty()) {
+            preparedStatement.setString(1, this.searchName);
+        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName != null && !this.searchName.isEmpty()) {
+            preparedStatement.setInt(1, Integer.parseInt(this.searchID));
+            preparedStatement.setString(2, this.searchName);
+        }
+
+        ResultSet resultSet = preparedStatement.executeQuery();
+        while (resultSet.next()) {
             int productID = resultSet.getInt("productID");
             String productName = resultSet.getString("productName");
             int productQuantity = resultSet.getInt("productQuantity");
@@ -59,33 +72,36 @@ public class Updatedata {
             ImageView imageView = new ImageView(byteToImage);
             imageView.setFitWidth(50);
             imageView.setFitHeight(50);
-            // assing to variable
+            // assign to variable
             this.setProductPrice(productPrice);
             this.setProductID(productID);
             this.setProductName(productName);
             this.setImageView(imageView);
             this.setProductQuantity(productQuantity);
         }
+
+        resultSet.close();
+        preparedStatement.close();
+        connection.close();
     }
 
-    public void NewProductUpdate(byte[] newImage,int newProductID, String newProductName,int newProductQuantity , double newProductPrice) throws SQLException {
+    public void NewProductUpdate(byte[] newImage, int newProductID, String newProductName, int newProductQuantity, double newProductPrice) throws SQLException {
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
         String password = "Pa$$w0rd";
-        Connection connection = DriverManager.getConnection(url,user,password);
+        Connection connection = DriverManager.getConnection(url, user, password);
         String query = "UPDATE stock SET productImage = ?, productID = ?, productName = ?, productQuantity = ?, Price = ? WHERE productID = ?";
         PreparedStatement preparedStatement = connection.prepareStatement(query);
-        preparedStatement.setBytes(1, newImage); // Assuming newImage is a byte array
+        preparedStatement.setBytes(1, newImage);
         preparedStatement.setInt(2, newProductID);
         preparedStatement.setString(3, newProductName);
         preparedStatement.setInt(4, newProductQuantity);
         preparedStatement.setDouble(5, newProductPrice);
-        preparedStatement.setInt(6, 8); // Assuming 8 is the ID of the product to update
+        preparedStatement.setInt(6, 9); // Use the actual product ID to update
         preparedStatement.executeUpdate();
 
-
-
-
+        preparedStatement.close();
+        connection.close();
     }
 
 

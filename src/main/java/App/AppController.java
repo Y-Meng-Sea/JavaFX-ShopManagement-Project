@@ -79,6 +79,10 @@ public class AppController {
     private AnchorPane deletePane;
     @FXML
     private AnchorPane shopPane;
+    private ObservableList<StoreData> productList = FXCollections.observableArrayList();
+    public File getfile;
+
+    // update section
     @FXML
     private TextField selectProductId;
     @FXML
@@ -89,10 +93,6 @@ public class AppController {
     private Button UpdateToSQLButton;
     @FXML
     private Button cancelUpdateButton;
-    private ObservableList<StoreData> productList = FXCollections.observableArrayList();
-    public File getfile;
-
-    // update section
     @FXML
     private TextField updateProductId;
     @FXML
@@ -105,7 +105,23 @@ public class AppController {
     private ImageView updateImageView;
     @FXML
     private Button updateImageButton;
-
+// delete section
+    @FXML
+    private TextField productIDForDelete;
+    @FXML
+    private TextField nameProductForDelete;
+    @FXML
+    private Button searchForDelete;
+    @FXML
+    private TextField deleteProductID;
+    @FXML
+    private TextField deleteProductName;
+    @FXML
+    private ImageView deleteProductImage;
+    @FXML
+    private Button deleteProductButton ;
+    @FXML
+    private Button cancelDeleteButton;
     @FXML
     public void initialize(){
 
@@ -115,6 +131,7 @@ public class AppController {
         productImage.setCellValueFactory(new PropertyValueFactory<>("productImage"));
         Price.setCellValueFactory(new PropertyValueFactory<>("priceAsCurrency"));
 
+        // Update product
         searchButton.setOnAction(e->{
             try {
                 updateExistingProduct();
@@ -141,6 +158,23 @@ public class AppController {
             updateProductPrice.clear();
             updateProductQuantity.clear();
         });
+        // delete product
+        searchForDelete.setOnAction(e->{
+            try {
+                searchProductForDelete();
+                System.out.println("click");
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        deleteProductButton.setOnAction(e->{
+            try {
+                DeleteProduct();
+            } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            }
+        });
+        // add product
         addProductButton.setOnAction(e->{
             try {
                 addProductToDatabase(getfile);
@@ -152,7 +186,6 @@ public class AppController {
             }
         });
 
-        // the
         caccelButton.setOnAction(e->{
             inputId.clear();
             inputName.clear();
@@ -188,8 +221,6 @@ public class AppController {
                 throw new RuntimeException(ex);
             }
         });
-
-
 
 // connect to database and show the product to the tableview
 
@@ -260,66 +291,100 @@ public class AppController {
             statusPane.setVisible(false);
             updatePane.setVisible(false);
         });
+        deleteProductID.setEditable(false);
+        deleteProductName.setEditable(false);
 
     }
+    public void searchProductForDelete() throws SQLException {
+        String notField = "";
+        String searchidfordelete = productIDForDelete.getText();
+        String searchNamefordelete = nameProductForDelete.getText();
+        if(!searchidfordelete.equals("") && searchNamefordelete.equals("")){
+            DeleteData deleteData = new DeleteData(searchidfordelete,notField);
+            deleteData.deleteproduct();
+            deleteProductID.setText(String.valueOf(deleteData.getProductId()));
+            deleteProductName.setText(deleteData.getProductName());
+            deleteProductImage.setImage(deleteData.getProductImage());
+            deleteProductID.setEditable(false);
+            deleteProductName.setEditable(false);
+            productIDForDelete.clear();
+            nameProductForDelete.clear();
+        }else if(searchidfordelete.equals("") && !searchNamefordelete.equals("")){
+            DeleteData deleteData = new DeleteData(notField,searchNamefordelete);
+            deleteData.deleteproduct();
+            deleteProductID.setText(String.valueOf(deleteData.getProductId()));
+            deleteProductName.setText(deleteData.getProductName());
+            deleteProductImage.setImage(deleteData.getProductImage());
+            deleteProductID.setEditable(false);
+            deleteProductName.setEditable(false);
+            productIDForDelete.clear();
+            nameProductForDelete.clear();
+        }else if(!searchidfordelete.equals("")&&!searchNamefordelete.equals("")){
+            DeleteData deleteData = new DeleteData(searchidfordelete,searchNamefordelete);
+            deleteData.deleteproduct();
+            deleteProductID.setText(String.valueOf(deleteData.getProductId()));
+            deleteProductName.setText(deleteData.getProductName());
+            deleteProductImage.setImage(deleteData.getProductImage());
+            deleteProductID.setEditable(false);
+            deleteProductName.setEditable(false);
+            productIDForDelete.clear();
+            nameProductForDelete.clear();
+        }
+    }
+    public void DeleteProduct() throws SQLException {
+        System.out.println(deleteProductID.getText());
+        DeleteData deleteData = new DeleteData();
+        deleteData.delete(deleteProductID.getText(),deleteProductName.getText());
+        connectDatabase();
+        deleteProductID.clear();
+        deleteProductName.clear();
+        deleteProductImage.setImage(null);
 
+
+    }
     public void updateExistingProduct() throws SQLException, IOException {
         String notField = "";
         String searchId = selectProductId.getText();
         String searchName = selectProductName.getText();
 
-        Updatedata updatedata = new Updatedata();
+        Updatedata updatedata;
 
-        if(searchId.equals("") && !searchName.equals("")){
-            updatedata = new Updatedata(notField,searchName);
-            updatedata.updatedata();
-            updateProductId.setText(String.valueOf(updatedata.getProductID()));
-            updateProductName.setText(updatedata.getProductName());
-            updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
-            updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
-            updateImageView.setImage(updatedata.getImageView().getImage());
-            selectProductName.clear();
-            selectProductId.clear();
-        }else if(!searchId.equals("")&& searchName.equals("")){
-            updatedata = new Updatedata(searchId,notField);
-            updatedata.updatedata();
-            updateProductId.setText(String.valueOf(updatedata.getProductID()));
-            updateProductName.setText(updatedata.getProductName());
-            updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
-            updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
-            updateImageView.setImage(updatedata.getImageView().getImage());
-            selectProductName.clear();
-            selectProductId.clear();
-        }else if(!searchId.equals("")&&!searchName.equals("")){
-            try{
-                updatedata = new Updatedata(searchId,searchName);
-                updatedata.updatedata();
-                updateProductId.setText(String.valueOf(updatedata.getProductID()));
-                updateProductName.setText(updatedata.getProductName());
-                updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
-                updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
-                updateImageView.setImage(updatedata.getImageView().getImage());
-                selectProductName.clear();
-                selectProductId.clear();
-            }catch (NullPointerException nullPointerException){
-                Alert alert = new Alert(Alert.AlertType.WARNING);
-                alert.setTitle("product not found ");
-                alert.setContentText("There are no specific product match to that product ID or product Name we recommend just search using only ID or Name");
-                alert.show();
+        try {
+            if (searchId.isEmpty() && !searchName.isEmpty()) {
+                updatedata = new Updatedata(notField, searchName);
+            } else if (!searchId.isEmpty() && searchName.isEmpty()) {
+                updatedata = new Updatedata(searchId, notField);
+            } else if (!searchId.isEmpty() && !searchName.isEmpty()) {
+                updatedata = new Updatedata(searchId, searchName);
+            } else {
+                throw new IllegalArgumentException("Either searchId or searchName must be provided.");
             }
-        }
 
+            updatedata.updatedata();
+            updateProductId.setText(String.valueOf(updatedata.getProductID()));
+            updateProductName.setText(updatedata.getProductName());
+            updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
+            updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
+            updateImageView.setImage(updatedata.getImageView().getImage());
+            selectProductName.clear();
+            selectProductId.clear();
+        } catch (NullPointerException nullPointerException) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Product not found");
+            alert.setContentText("No specific product matches the provided product ID or product Name. We recommend searching using either ID or Name.");
+            alert.show();
+        }
     }
 
     public void addNewUpdate(File file) throws IOException, SQLException {
         Updatedata updatedata = new Updatedata();
-        // get new data from text field
+        // get new data from text fields
         int newProductId = Integer.parseInt(updateProductId.getText());
         String newProductName = updateProductName.getText();
         int newProductQuantity = Integer.parseInt(updateProductQuantity.getText());
         double newProductPrice = Double.parseDouble(updateProductPrice.getText());
         byte[] newImageBytes = readImage(file);
-        updatedata.NewProductUpdate(newImageBytes,newProductId,newProductName,newProductQuantity,newProductPrice);
+        updatedata.NewProductUpdate(newImageBytes, newProductId, newProductName, newProductQuantity, newProductPrice);
         connectDatabase();
 
         updateProductId.clear();
@@ -327,7 +392,6 @@ public class AppController {
         updateProductQuantity.clear();
         updateProductPrice.clear();
         updateImageView.setImage(null);
-
     }
     public void addProductToDatabase(File file) throws SQLException, IOException {
         byte[] imageBytes = readImage(file);
