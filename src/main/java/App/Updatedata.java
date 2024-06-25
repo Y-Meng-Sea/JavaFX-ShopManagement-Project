@@ -1,91 +1,85 @@
 package App;
 
+import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
-import javafx.scene.image.ImageView;
 
 import java.io.ByteArrayInputStream;
 
 import java.sql.*;
 
 public class Updatedata {
-
+    private String searchID ;
+    private String searchName;
     private int productID;
     private String productName;
     private int productQuantity;
     private double productPrice;
-    private ImageView imageView;
+    private Image productImage;
+// Variable for store new product data
+    private byte[] newImage;
+    private int newProductID;
+    private String newProductName;
+    private int newProductQuantity;
+    private double newProductPrice;
+    private int previosID;
 
-     private String searchID ;
-     private String searchName;
 
-//     private int newProductID;
-//     private String newProductName;
-//     private int newProductQuantity;
-//
-//     private double newProductPrice;
-//
-//     private ImageView newImage;
-
-    public Updatedata(){};
-    public Updatedata(String searchID,String searchName){
-        this.searchName = searchName;
-        this.searchID = searchID;
-
-    }
-
-    public void updatedata() throws SQLException {
+//===================== search method for search which product to update =================
+    public void searchProduct(String searchID , String searchName) throws SQLException {
+        String query= null;
+        // connect to database
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
         String password = "Pa$$w0rd";
         Connection connection = DriverManager.getConnection(url, user, password);
-        String query = "";
-        if (this.searchID != null && this.searchID.isEmpty() && !this.searchName.isEmpty()) {
-            query = "SELECT * FROM stock WHERE productName = ?";
-        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName.isEmpty()) {
-            query = "SELECT * FROM stock WHERE productID = ?";
-        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName != null && !this.searchName.isEmpty()) {
-            query = "SELECT * FROM stock WHERE productID = ? AND productName = ?";
-        } else {
-            throw new IllegalArgumentException("Either searchID or searchName must be provided.");
+        Statement statement = connection.createStatement();
+        ResultSet resultSet =null;
+        if(!searchID.equals("")&&searchName.equals("")){
+            query = "SELECT * FROM stock WHERE productID= "+searchID;
+            resultSet = statement.executeQuery(query);
+        } else if (searchID.equals("")&&!searchName.equals("")) {
+            query = "SELECT * FROM stock WHERE productName="+"\""+searchName+"\"";
+            resultSet = statement.executeQuery(query);
+        } else if (!searchID.equals("")&&!searchName.equals("")) {
+            query = "SELECT * FROM stock WHERE productID="+"\""+searchID+"\""+"AND productName="+"\""+searchName+"\"";
+            resultSet = statement.executeQuery(query);
         }
 
-        PreparedStatement preparedStatement = connection.prepareStatement(query);
+        try {
+            if (resultSet!=null&&resultSet.next()){
+                int productID = resultSet.getInt("productID");
+                String productName = resultSet.getString("productName");
+                int productQuantity = resultSet.getInt("productQuantity");
+                double productPrice = resultSet.getDouble("Price");
+                byte[] imageByte = resultSet.getBytes("productImage");
 
-        if (this.searchID != null && !this.searchID.isEmpty() && this.searchName.isEmpty()) {
-            preparedStatement.setInt(1, Integer.parseInt(this.searchID));
-        } else if (this.searchID == null && !this.searchName.isEmpty()) {
-            preparedStatement.setString(1, this.searchName);
-        } else if (this.searchID != null && !this.searchID.isEmpty() && this.searchName != null && !this.searchName.isEmpty()) {
-            preparedStatement.setInt(1, Integer.parseInt(this.searchID));
-            preparedStatement.setString(2, this.searchName);
+                Image productImage = new Image(new ByteArrayInputStream(imageByte));
+                this.setProductID(productID);
+                this.setProductName(productName);
+                this.setProductQuantity(productQuantity);
+                this.setProductPrice(productPrice);
+                this.setProductImage(productImage);
+            } else{
+                Alert alert = new Alert(Alert.AlertType.INFORMATION);
+                alert.setTitle("product not found");
+                alert.setContentText("There are not product match to you keyword");
+                alert.show();
+            }
+        } catch (NullPointerException nullPointerException){
+            throw  nullPointerException;
+        } catch (Exception e){
+            e.printStackTrace();
         }
-
-        ResultSet resultSet = preparedStatement.executeQuery();
-        while (resultSet.next()) {
-            int productID = resultSet.getInt("productID");
-            String productName = resultSet.getString("productName");
-            int productQuantity = resultSet.getInt("productQuantity");
-            byte[] bytesImage = resultSet.getBytes("productImage");
-            double productPrice = resultSet.getDouble("Price");
-            // convert image
-            Image byteToImage = new Image(new ByteArrayInputStream(bytesImage));
-            ImageView imageView = new ImageView(byteToImage);
-            imageView.setFitWidth(50);
-            imageView.setFitHeight(50);
-            // assign to variable
-            this.setProductPrice(productPrice);
-            this.setProductID(productID);
-            this.setProductName(productName);
-            this.setImageView(imageView);
-            this.setProductQuantity(productQuantity);
-        }
-
-        resultSet.close();
-        preparedStatement.close();
-        connection.close();
     }
 
-    public void NewProductUpdate(byte[] newImage, int newProductID, String newProductName, int newProductQuantity, double newProductPrice) throws SQLException {
+    public void updateProduct(byte[] newImage, int newProductID, String newProductName, int newProductQuantity, double newProductPrice ,int previosID) throws SQLException {
+        this.newImage = newImage;
+        this.newProductID = newProductID;
+        this.newProductName = newProductName;
+        this.newProductQuantity = newProductQuantity;
+        this.newProductPrice = newProductPrice;
+        this.previosID = previosID;
+        // connect to database
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
         String password = "Pa$$w0rd";
@@ -97,47 +91,12 @@ public class Updatedata {
         preparedStatement.setString(3, newProductName);
         preparedStatement.setInt(4, newProductQuantity);
         preparedStatement.setDouble(5, newProductPrice);
-        preparedStatement.setInt(6, 9); // Use the actual product ID to update
+        preparedStatement.setInt(6, previosID); // Use the actual product ID to update
         preparedStatement.executeUpdate();
-
         preparedStatement.close();
         connection.close();
     }
 
-
-
-    public void setProductID(int productID) {
-        this.productID = productID;
-    }
-
-    public void setProductName(String productName) {
-        this.productName = productName;
-    }
-
-    public void setProductQuantity(int productQuantity) {
-        this.productQuantity = productQuantity;
-    }
-
-    public void setImageView(ImageView imageView) {
-        this.imageView = imageView;
-    }
-    public void setProductPrice(double productPrice){
-        this.productPrice = productPrice;
-    }
-
-    public double getProductPrice(){return  this.productPrice;}
-    public String getProductName(){
-        return this.productName;
-    }
-    public int getProductID(){
-        return this.productID;
-    }
-    public int getProductQuantity(){
-        return this.productQuantity;
-    }
-    public ImageView getImageView(){
-        return this.imageView;
-    }
 
     public String getSearchID() {
         return searchID;
@@ -153,5 +112,85 @@ public class Updatedata {
 
     public void setSearchName(String searchName) {
         this.searchName = searchName;
+    }
+
+    public int getProductID() {
+        return productID;
+    }
+
+    public void setProductID(int productID) {
+        this.productID = productID;
+    }
+
+    public String getProductName() {
+        return productName;
+    }
+
+    public void setProductName(String productName) {
+        this.productName = productName;
+    }
+
+    public int getProductQuantity() {
+        return productQuantity;
+    }
+
+    public void setProductQuantity(int productQuantity) {
+        this.productQuantity = productQuantity;
+    }
+
+    public double getProductPrice() {
+        return productPrice;
+    }
+
+    public void setProductPrice(double productPrice) {
+        this.productPrice = productPrice;
+    }
+
+    public Image getProductImage() {
+        return productImage;
+    }
+
+    public void setProductImage(Image productImage) {
+        this.productImage = productImage;
+    }
+
+    public byte[] getNewImage() {
+        return newImage;
+    }
+
+    public void setNewImage(byte[] newImage) {
+        this.newImage = newImage;
+    }
+
+    public int getNewProductID() {
+        return newProductID;
+    }
+
+    public void setNewProductID(int newProductID) {
+        this.newProductID = newProductID;
+    }
+
+    public String getNewProductName() {
+        return newProductName;
+    }
+
+    public void setNewProductName(String newProductName) {
+        this.newProductName = newProductName;
+    }
+
+    public int getNewProductQuantity() {
+        return newProductQuantity;
+    }
+
+    public void setNewProductQuantity(int newProductQuantity) {
+        this.newProductQuantity = newProductQuantity;
+    }
+
+    public double getNewProductPrice() {
+        return newProductPrice;
+    }
+
+    public void setNewProductPrice(double newProductPrice) {
+        this.newProductPrice = newProductPrice;
     }
 }
