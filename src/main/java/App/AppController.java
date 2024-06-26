@@ -1,6 +1,7 @@
 package App;
 
 import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
@@ -11,10 +12,9 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-
 import java.io.*;
-import java.nio.ByteBuffer;
 import java.sql.*;
+import java.util.Iterator;
 
 public class AppController {
 
@@ -237,7 +237,6 @@ public class AppController {
         searchForDelete.setOnAction(e->{
             try {
                 searchProductForDelete();
-                System.out.println("click");
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             }
@@ -507,13 +506,37 @@ public class AppController {
         }
     }
     public void DeleteProduct() throws SQLException {
-        System.out.println(deleteProductID.getText());
-        DeleteData deleteData = new DeleteData();
-        deleteData.delete(deleteProductID.getText(),deleteProductName.getText());
-        deleteProductID.clear();
-        deleteProductName.clear();
-        deleteProductImage.setImage(null);
+        String deletetId = deleteProductID.getText();
+        String deleteName = deleteProductName.getText();
+        // Iterate over the productList to find and delete the product
+        Iterator<StoreData> iterator = productList.iterator();
+        while (iterator.hasNext()) {
+            StoreData product = iterator.next();
+            if (String.valueOf(product.getProductId()).equals(deletetId) || String.valueOf(product.getProductName()).equals(deleteName)) {
+                // Match found, delete the product
+                iterator.remove();
+
+                // Optionally, delete from database
+                DeleteData deleteData = new DeleteData();
+                deleteData.delete(deletetId, product.getProductName());
+
+                // Clear fields and reset image
+                deleteProductID.clear();
+                deleteProductName.clear();
+                deleteProductImage.setImage(null);
+
+                // Update TableView immediately
+                Platform.runLater(() -> {
+                    tableview.setItems(null); // Clear TableView
+                    tableview.setItems(productList); // Re-set TableView with updated productList
+                });
+
+                // Exit loop since we found and deleted the product
+                break;
+            }
+        }
     }
+
 
     //================= Connect to the database section and add product to observableList ====================//
     public void connectDatabase() throws SQLException {
