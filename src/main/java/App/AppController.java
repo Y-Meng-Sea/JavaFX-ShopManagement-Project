@@ -8,12 +8,13 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.*;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+
 import java.io.*;
 import java.nio.ByteBuffer;
 import java.sql.*;
-import java.util.Arrays;
 
 public class AppController {
 
@@ -98,6 +99,16 @@ public class AppController {
 
 //=================== Update product UI ====================//
     @FXML
+    private ImageView previousImage;
+    @FXML
+    private TextField previousId;
+    @FXML
+    private TextField previousName;
+    @FXML
+    private TextField previousPrice;
+    @FXML
+    private TextField previousQuantity;
+    @FXML
     private TextField selectProductId; // select product using ID
     @FXML
     private TextField selectProductName; // select product using name
@@ -139,6 +150,8 @@ public class AppController {
     @FXML
     private Button cancelDeleteButton;
 
+    ///
+    private File UpdateImageFile;
 
     @FXML
     public void initialize(){
@@ -191,13 +204,18 @@ public class AppController {
             try {
                 searchProductForUpdate();
             } catch (SQLException ex) {
-                throw new RuntimeException(ex);
+               Alert alert = new Alert(Alert.AlertType.INFORMATION);
+               alert.setTitle("Wrong input");
+               alert.setContentText("You search is not following our instruction");
+               alert.show();
+//
             }
         });
 
         updateImageButton.setOnAction(e-> {
             try {
-                FileChooseerForUpdate();
+
+                FileChooseer1();
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             } catch (SQLException ex) {
@@ -207,8 +225,10 @@ public class AppController {
 
         UpdateToSQLButton.setOnAction(e->{
             try {
-                updateTheSelectProduct();
+                updateTheSelectProduct(UpdateImageFile);
             } catch (SQLException ex) {
+                throw new RuntimeException(ex);
+            } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
         });
@@ -296,6 +316,8 @@ public class AppController {
     }
 
 
+
+
     //================= Add product Section ====================//
     public void addProductToDatabase(File file) throws SQLException, IOException {
         byte[] imageBytes = readImage(file);
@@ -340,37 +362,112 @@ public class AppController {
         alert.show();
     }
 
-    int previousID;
-    String previousName;
-    int previousQuantity ;
-    double previousPrice;
-    byte[] previousImage;
-
-    //================= Update product Section ====================//
+    // ========================== update product feature=============================//
+    private  int PreviousID;
+    private byte[] previousImageByte;
     public void searchProductForUpdate() throws SQLException {
         String searchId = selectProductId.getText();
         String searchName = selectProductName.getText();
         Updatedata updatedata = new Updatedata();
-        updatedata.searchProduct(searchId,searchName);
-        updateProductId.setText(String.valueOf(updatedata.getProductID()));
-        updateProductName.setText(updatedata.getProductName());
-        updateProductQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
-        updateProductPrice.setText(String.valueOf(updatedata.getProductPrice()));
-        updateProductImage.setImage(updatedata.getProductImage());
-        updateProductImage.setFitWidth(150);
-        updateProductImage.setFitHeight(150);
-        // get the previous version
-        previousID = updatedata.getProductID();
-        previousName = updatedata.getProductName();
-        previousQuantity = updatedata.getProductQuantity();
-        previousPrice = updatedata.getProductPrice();
-        Image image = updatedata.getProductImage();
-        previousImage = getImageData(image);
+        updatedata.searchProduct(searchId, searchName);
+        previousId.setText(String.valueOf(updatedata.getProductID()));
+        previousName.setText(updatedata.getProductName());
+        previousQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
+        previousPrice.setText(String.valueOf(updatedata.getProductPrice()));
+        previousImage.setImage(updatedata.getProductImage());
+        Image image = previousImage.getImage();
+        previousImageByte = imageToByteArray(image);
+        PreviousID =Integer.parseInt(previousId.getText());
+        previousId.setEditable(false);
+        previousName.setEditable(false);
+        previousQuantity.setEditable(false);
+        previousPrice.setEditable(false);
     }
-    public void updateTheSelectProduct() throws SQLException {
+    private int newId = 0;
+    private String newName = "";
+    private int newQuantity = 0;
+    private double newPrice = 0;
+    private byte [] newImage = null;
+    private void updateTheSelectProduct(File file) throws SQLException, IOException {
+        if(!updateProductId.getText().isEmpty()){
+            newId =Integer.parseInt(updateProductId.getText());
+        }
+        if(!updateProductName.getText().isEmpty()){
+            newName = updateProductName.getText();
+        }
+        if(!updateProductQuantity.getText().isEmpty()){
+            newQuantity =Integer.parseInt(updateProductQuantity.getText());
+        }
+        if(!updateProductPrice.getText().isEmpty()){
+        newPrice = Double.parseDouble(updateProductPrice.getText());
+        }
+        if(updateProductImage.getImage() != null){
+            newImage =readImage(UpdateImageFile);
+        }
+        Updatedata updatedata = new Updatedata();
+        if (newId == 0 && newName.equals("") && newQuantity == 0 && newPrice == 0 && newImage== null){
+            Alert alert = new Alert(Alert.AlertType.INFORMATION);
+            alert.setTitle("No change");
+            alert.setContentText("There are no specific change in you product !!");
+            alert.show();
+        }else if (newImage == null){
+            updatedata.updateProduct(previousImageByte,newId,newName,newQuantity,newPrice,PreviousID);
+            System.out.println("done using previous image");
+            System.out.println(previousImage);
+
+        }else {
+            updatedata.updateProduct(newImage,newId,newName,newQuantity,newPrice,PreviousID);
+            System.out.println(newImage);
+            System.out.println("done using new image");
+        }
+        // Update the observable list
+        for (StoreData product : productList) {
+            if (product.getProductId() == PreviousID) {
+                if (newImage != null) {
+                    Image image = new Image(new ByteArrayInputStream(newImage));
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitHeight(50);
+                    imageView.setFitWidth(50);
+                    product.setProductImage(imageView);
+                }else {
+                    Image image = new Image(new ByteArrayInputStream(previousImageByte));
+                    ImageView imageView = new ImageView(image);
+                    imageView.setFitHeight(50);
+                    imageView.setFitWidth(50);
+                    product.setProductImage(imageView);
+                }
+                if (newId != 0) {
+                    product.setProductId(newId);
+                }else{
+                    product.setProductID(PreviousID);
+                }
+                if (!newName.isEmpty()) {
+                    product.setProductName(newName);
+                }else {
+                    product.setProductName(previousName.getText());
+                }
+                if (newQuantity != 0) {
+                    product.setProductQuantity(newQuantity);
+                }else {
+                    product.setProductQuantity(Integer.parseInt(previousQuantity.getText()));
+                }
+                if (newPrice != 0.0) {
+                    product.setProductPrice(newPrice + "$");
+                }else {
+                    product.setProductPrice(previousPrice.getText() + "$");
+                }
+                break;
+            }
+        }
+        tableview.refresh();
+        updateProductId.clear();
+        updateProductName.clear();
+        updateProductQuantity.clear();
+        updateProductPrice.clear();
+        updateProductImage.setImage(null);
+    }
 
 
-    }
 
     //================= Delete product Section ====================//
     public void searchProductForDelete() throws SQLException {
@@ -423,44 +520,72 @@ public class AppController {
         String url = "jdbc:mysql://localhost/storedata";
         String user = "root";
         String password = "Pa$$w0rd";
-        Connection connection = DriverManager.getConnection(url,user,password);
+        Connection connection = DriverManager.getConnection(url, user, password);
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("select * from stock");
-        while (resultSet.next()){
+
+        while (resultSet.next()) {
             int productIdFromSQL = resultSet.getInt("productID");
             String productNameFromSQL = resultSet.getString("productName");
             int productQuantityFromSQL = resultSet.getInt("productQuantity");
             double priceFromSQL = resultSet.getDouble("Price");
-            String ConvertPrice = Double.toString(priceFromSQL);
-            String PriceAsCurrency = ConvertPrice +"$";
-            byte[] ByteImageFromSQL = resultSet.getBytes("productImage");
-            //convert to image
-            Image productImage = new Image(new ByteArrayInputStream(ByteImageFromSQL));
+            String convertPrice = Double.toString(priceFromSQL);
+            String priceAsCurrency = convertPrice + "$";
+            byte[] byteImageFromSQL = resultSet.getBytes("productImage");
+
+            // Convert byte[] to image
+            Image productImage = new Image(new ByteArrayInputStream(byteImageFromSQL));
             ImageView productImageView = new ImageView(productImage);
             productImageView.setFitHeight(50);
             productImageView.setFitWidth(50);
-            productList.add(new StoreData(productImageView,productIdFromSQL,productNameFromSQL,productQuantityFromSQL,PriceAsCurrency));
+
+            // Add product to observable list
+            productList.add(new StoreData(productImageView, productIdFromSQL, productNameFromSQL, productQuantityFromSQL, priceAsCurrency));
         }
+
+        resultSet.close();
+        statement.close();
+        connection.close();
     }
 
 
-    //================= the File chooser Function ====================//
+    public static byte[] imageToByteArray(Image image) {
+        byte[] byteArray = null;
+        try {
+            // Determine image dimensions
+            int width = (int) image.getWidth();
+            int height = (int) image.getHeight();
 
-    public void FileChooseerForUpdate()throws IOException,SQLException{
-        FileChooser fileChooser = new FileChooser();
-        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
-        File file = fileChooser.showOpenDialog(new Stage());
-        readImage(file);
-        getfile = file ;
-        try{
-            if (file != null) {
-                Image image = new Image(file.toURI().toString());
-                updateProductImage.setImage(image);
+            // Create byte array output stream
+            ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
+
+            // Create pixel reader for the image
+            PixelReader pixelReader = image.getPixelReader();
+
+            // Iterate through pixels to extract color information
+            for (int y = 0; y < height; y++) {
+                for (int x = 0; x < width; x++) {
+                    Color color = pixelReader.getColor(x, y);
+                    int red = (int) (((Color) color).getRed() * 255);
+                    int green = (int) (color.getGreen() * 255);
+                    int blue = (int) (color.getBlue() * 255);
+
+                    // Write RGB values to output stream
+                    outputStream.write(red);
+                    outputStream.write(green);
+                    outputStream.write(blue);
+                }
             }
-        }catch (Error error){
-           updateProductImage.setImage(updateProductImage.getImage());
+
+            // Convert output stream to byte array
+            byteArray = outputStream.toByteArray();
+            outputStream.close();
+        } catch (IOException e) {
+            e.printStackTrace();
         }
+        return byteArray;
     }
+    //================= the File chooser Function ====================//
     public void FileChooseer()throws IOException,SQLException{
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
@@ -476,7 +601,22 @@ public class AppController {
             throw nullPointerException;
         }
     }
+    public void FileChooseer1()throws IOException,SQLException{
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("Image file","*.png","*.jpg","*,jpeg"));
+        File file = fileChooser.showOpenDialog(new Stage());
+        readImage(file);
+        UpdateImageFile = file ;
+        try{
+            if (file != null) {
+                Image image = new Image(file.toURI().toString());
+                updateProductImage.setImage(image);
 
+            }
+        }catch (NullPointerException nullPointerException){
+            throw nullPointerException;
+        }
+    }
 
     //================= the Convert file image to Bytes Arrays Function ====================//
     // read image to BLOB (binary large object)
@@ -487,27 +627,6 @@ public class AppController {
         fileInputStream.read(byteArray);
         fileInputStream.close();
         return byteArray;
-    }
-
-    public byte[] getImageData(Image image) {
-        int width = (int) image.getWidth();
-        int height = (int) image.getHeight();
-
-        // ARGB format (4 bytes per pixel)
-        WritablePixelFormat<ByteBuffer> format = PixelFormat.getByteBgraInstance();
-
-        // Create byte buffer for image data
-        ByteBuffer byteBuffer = ByteBuffer.allocate(width * height * 4);
-        PixelReader pixelReader = image.getPixelReader();
-
-        // Read pixels into byte buffer
-        pixelReader.getPixels(0, 0, width, height, format, byteBuffer, width * 4);
-
-        // Convert ByteBuffer to byte array
-        byte[] imageData = new byte[byteBuffer.capacity()];
-        byteBuffer.get(imageData);
-
-        return imageData;
     }
 
 }

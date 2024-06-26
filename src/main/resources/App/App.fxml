@@ -15,6 +15,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.StackPane?>
+<?import javafx.scene.shape.Line?>
 <?import javafx.scene.text.Font?>
 <?import javafx.scene.text.Text?>
 
@@ -249,34 +250,34 @@
                         </Label>
                      </children>
                   </AnchorPane>
-                  <AnchorPane fx:id="updatePane" layoutX="153.0" layoutY="261.0" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <AnchorPane fx:id="updatePane" layoutX="5.0" prefHeight="600.0" prefWidth="677.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="5.0" AnchorPane.rightAnchor="-5.0" AnchorPane.topAnchor="0.0">
                      <children>
-                        <Label layoutX="48.0" layoutY="35.0" text="UPDATE THE EXISTING PRODUCT" textFill="#eee128">
+                        <Label layoutX="83.0" layoutY="14.0" text="UPDATE THE EXISTING PRODUCT" textFill="#eee128">
                            <font>
                               <Font name="System Bold" size="24.0" />
                            </font>
                         </Label>
-                        <Label layoutX="53.0" layoutY="93.0" text="Product ID" textFill="WHITE">
+                        <Label layoutX="24.0" layoutY="59.0" text="Product ID" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="51.0" layoutY="146.0" text="Product Name" textFill="WHITE">
+                        <Label layoutX="26.0" layoutY="103.0" text="Product Name" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <TextField fx:id="selectProductId" layoutX="228.0" layoutY="86.0" promptText="Product ID">
+                        <TextField fx:id="selectProductId" layoutX="166.0" layoutY="58.0" promptText="Product ID">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="selectProductName" layoutX="226.0" layoutY="143.0" promptText="ProductName">
+                        <TextField fx:id="selectProductName" layoutX="166.0" layoutY="102.0" promptText="ProductName">
                            <font>
-                              <Font size="18.0" />
+                              <Font size="14.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="searchButton" layoutX="52.0" layoutY="212.0" mnemonicParsing="false" style="-fx-background-color: #545454;" text="Search" textFill="WHITE">
+                        <Button fx:id="searchButton" layoutX="24.0" layoutY="138.0" mnemonicParsing="false" style="-fx-background-color: #545454;" text="Search" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
@@ -284,71 +285,117 @@
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
-                        <Label layoutX="52.0" layoutY="303.0" text="New product Image :" textFill="WHITE">
+                        <Label layoutX="434.0" layoutY="383.0" text="New Image :" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="54.0" layoutY="360.0" text="New product ID :" textFill="WHITE">
+                        <Label layoutX="26.0" layoutY="383.0" text="New ID :" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="54.0" layoutY="409.0" text="New product Name :" textFill="WHITE">
+                        <Label layoutX="22.0" layoutY="473.0" text="New Name :" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="54.0" layoutY="457.0" text="New product Quantity : " textFill="WHITE">
+                        <Label layoutX="219.0" layoutY="383.0" text="New Quantity : " textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Label layoutX="56.0" layoutY="504.0" text="New product Price :" textFill="WHITE">
+                        <Label layoutX="219.0" layoutY="473.0" text="New Price :" textFill="WHITE">
                            <font>
                               <Font size="18.0" />
                            </font>
                         </Label>
-                        <Pane layoutX="272.0" layoutY="225.0" prefHeight="105.0" prefWidth="102.0" style="-fx-background-color: white;">
+                        <Pane layoutX="436.0" layoutY="414.0" prefHeight="91.0" prefWidth="107.0" style="-fx-background-color: white;">
                            <children>
-                              <ImageView fx:id="updateProductImage" fitHeight="109.0" fitWidth="108.0" layoutX="-3.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
+                              <ImageView fx:id="updateProductImage" fitHeight="93.0" fitWidth="108.0" layoutX="-3.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
                            </children>
                         </Pane>
-                        <TextField fx:id="updateProductQuantity" layoutX="272.0" layoutY="458.0" promptText="New Quantity">
+                        <TextField fx:id="updateProductQuantity" layoutX="220.0" layoutY="414.0" prefHeight="30.0" prefWidth="160.0" promptText="New Quantity">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="updateProductPrice" layoutX="272.0" layoutY="505.0" promptText="New Price">
+                        <TextField fx:id="updateProductPrice" layoutX="219.0" layoutY="505.0" prefHeight="30.0" prefWidth="161.0" promptText="New Price">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="updateProductId" layoutX="272.0" layoutY="361.0" promptText="New ID">
+                        <TextField fx:id="updateProductId" layoutX="23.0" layoutY="414.0" prefHeight="30.0" prefWidth="159.0" promptText="New ID">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <TextField fx:id="updateProductName" layoutX="272.0" layoutY="410.0" promptText="New Name">
+                        <TextField fx:id="updateProductName" layoutX="22.0" layoutY="505.0" prefHeight="30.0" prefWidth="159.0" promptText="New Name">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </TextField>
-                        <Button fx:id="UpdateToSQLButton" layoutX="272.0" layoutY="555.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="81.0" style="-fx-background-color: #545454;" text="UPDATE " textFill="WHITE">
+                        <Button fx:id="UpdateToSQLButton" layoutX="20.0" layoutY="556.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="81.0" style="-fx-background-color: #545454;" text="UPDATE " textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="cancelUpdateButton" layoutX="364.0" layoutY="555.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #545454;" text="Cancel" textFill="WHITE">
+                        <Button fx:id="cancelUpdateButton" layoutX="126.0" layoutY="556.0" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #545454;" text="Cancel" textFill="WHITE">
                            <font>
                               <Font size="14.0" />
                            </font>
                         </Button>
-                        <Button fx:id="updateImageButton" layoutX="272.0" layoutY="330.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="103.0" style="-fx-background-color: #545454;" text="New Image" textFill="WHITE">
+                        <Button fx:id="updateImageButton" layoutX="434.0" layoutY="508.0" mnemonicParsing="false" prefHeight="25.0" prefWidth="110.0" style="-fx-background-color: #545454;" text="New Image" textFill="WHITE">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
                         </Button>
+                        <Pane layoutX="20.0" layoutY="195.0" prefHeight="105.0" prefWidth="102.0" style="-fx-background-color: white;">
+                           <children>
+                              <ImageView fx:id="previousImage" fitHeight="109.0" fitWidth="108.0" layoutX="-3.0" layoutY="-2.0" pickOnBounds="true" preserveRatio="true" />
+                           </children>
+                        </Pane>
+                        <Line endX="576.0" layoutX="101.0" layoutY="328.0" startX="-100.0" stroke="WHITE" />
+                        <Label layoutX="151.0" layoutY="177.0" text="Product ID :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="previousId" layoutX="151.0" layoutY="202.0" prefHeight="30.0" prefWidth="149.0" promptText="ID">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="149.0" layoutY="248.0" text="Name :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="previousName" layoutX="151.0" layoutY="270.0" prefHeight="30.0" prefWidth="150.0" promptText="Name">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="339.0" layoutY="177.0" text="Quantity : " textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="previousQuantity" layoutX="340.0" layoutY="200.0" prefHeight="30.0" prefWidth="160.0" promptText="Quantity">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
+                        <Label layoutX="342.0" layoutY="248.0" text="Price :" textFill="WHITE">
+                           <font>
+                              <Font size="18.0" />
+                           </font>
+                        </Label>
+                        <TextField fx:id="previousPrice" layoutX="342.0" layoutY="270.0" prefHeight="30.0" prefWidth="157.0" promptText="Price">
+                           <font>
+                              <Font size="14.0" />
+                           </font>
+                        </TextField>
                      </children>
                   </AnchorPane>
                   <AnchorPane fx:id="deletePane" layoutX="169.0" layoutY="219.0" prefHeight="600.0" prefWidth="677.0" visible="false" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

@@ -8,6 +8,7 @@ public class StoreData {
     private String productName;
     private Integer productQuantity;
     private String priceAsCurrency;
+    private String ProductPrice;
 
 
     public StoreData(ImageView productImage, int productID, String productName, int productQuantity, String priceAsCurrency){
@@ -55,5 +56,17 @@ public class StoreData {
     }
     public String getPriceAsCurrency(){
         return this.priceAsCurrency;
+    }
+
+    public int getProductId() {
+        return this.getProductID();
+    }
+
+    public void setProductId(int newId) {
+        this.productID = newId;
+    }
+
+    public void setProductPrice(String s) {
+        this.ProductPrice = s;
     }
 }
