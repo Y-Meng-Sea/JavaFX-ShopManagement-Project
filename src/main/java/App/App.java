@@ -12,7 +12,7 @@ public class App extends Application {
         public void start(Stage window) throws IOException{
             FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("App.fxml"));
             Scene scene = new Scene(fxmlLoader.load());
-            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
+//            scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
             Image icon = new Image("App/apple.png");
             window.getIcons().add(icon);
             window.setTitle("ShopManagement");

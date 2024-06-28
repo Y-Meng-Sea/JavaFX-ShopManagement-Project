@@ -82,6 +82,31 @@ public class Updatedata {
         alert.show();
     }
 
+    public static byte[] getPreviousImage(String searchID, String searchName) throws SQLException {
+        byte[] previousImageByte = new byte[0];
+        String url = "jdbc:mysql://localhost/storedata?maxAllowedPacket=67108864";
+        String user = "root";
+        String password = "Pa$$w0rd";
+        Connection connection = DriverManager.getConnection(url,user,password);
+        Statement statement = connection.createStatement();
+        String query = null;
+        if (!searchID.isEmpty() && searchName.isEmpty()) {
+            query = "SELECT productImage FROM stock WHERE productID= " + searchID;
+        } else if (searchID.isEmpty() && !searchName.isEmpty()) {
+            query = "SELECT productImage FROM stock WHERE productName=\"" + searchName + "\"";
+        } else if (!searchID.isEmpty() && !searchName.isEmpty()) {
+            query = "SELECT productImage FROM stock WHERE productID=" + searchID + " AND productName=\"" + searchName + "\"";
+        }
+        ResultSet resultSet = null;
+        if (query != null) {
+            resultSet = statement.executeQuery(query);
+        }
+       if(resultSet != null && resultSet.next()){
+           previousImageByte = resultSet.getBytes("productImage");
+
+       }
+        return previousImageByte;
+    }
 
 
     public int getProductID() {

@@ -1,6 +1,5 @@
 package App;
 
-import de.jensd.fx.glyphs.fontawesome.FontAwesomeIcon;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -33,8 +32,6 @@ public class AppController {
     private Button updateButton;
     @FXML
     private Button deleteButton;
-    @FXML
-    private FontAwesomeIcon aboutButton;
     @FXML
     private Button GotoConsoleButton;
     @FXML
@@ -225,12 +222,19 @@ public class AppController {
 
         UpdateToSQLButton.setOnAction(e->{
             try {
-                updateTheSelectProduct(UpdateImageFile);
+                updateTheSelectProduct();
             } catch (SQLException ex) {
                 throw new RuntimeException(ex);
             } catch (IOException ex) {
                 throw new RuntimeException(ex);
             }
+        });
+        cancelUpdateButton.setOnAction(e->{
+            updateProductImage.setImage(null);
+            updateProductName.clear();
+            updateProductId.clear();
+            updateProductPrice.clear();
+            updateProductQuantity.clear();
         });
 
         //================= Delete product feature ====================//
@@ -248,9 +252,13 @@ public class AppController {
                 throw new RuntimeException(ex);
             }
         });
-
+        cancelDeleteButton.setOnAction(e->{
+            deleteProductName.clear();
+            deleteProductID.clear();
+        });
 
     //================= Interactive with side bar Section ====================//
+
         homeButton.setOnAction(e->{
             homePane.setVisible(true);
             navbarPane.setVisible(true);
@@ -374,8 +382,7 @@ public class AppController {
         previousQuantity.setText(String.valueOf(updatedata.getProductQuantity()));
         previousPrice.setText(String.valueOf(updatedata.getProductPrice()));
         previousImage.setImage(updatedata.getProductImage());
-        Image image = previousImage.getImage();
-        previousImageByte = imageToByteArray(image);
+        previousImageByte = Updatedata.getPreviousImage(searchId,searchName);
         PreviousID =Integer.parseInt(previousId.getText());
         previousId.setEditable(false);
         previousName.setEditable(false);
@@ -387,22 +394,36 @@ public class AppController {
     private int newQuantity = 0;
     private double newPrice = 0;
     private byte [] newImage = null;
-    private void updateTheSelectProduct(File file) throws SQLException, IOException {
+    private void updateTheSelectProduct() throws SQLException, IOException {
         if(!updateProductId.getText().isEmpty()){
             newId =Integer.parseInt(updateProductId.getText());
+        }else {
+            newId =Integer.parseInt(previousId.getText());
         }
+
         if(!updateProductName.getText().isEmpty()){
             newName = updateProductName.getText();
+        }else {
+            newName = previousName.getText();
         }
+
         if(!updateProductQuantity.getText().isEmpty()){
             newQuantity =Integer.parseInt(updateProductQuantity.getText());
+        }else{
+            newQuantity = Integer.parseInt(previousQuantity.getText());
         }
+
+
         if(!updateProductPrice.getText().isEmpty()){
         newPrice = Double.parseDouble(updateProductPrice.getText());
+        }else{
+            newPrice = Double.parseDouble(previousPrice.getText());
         }
+
         if(updateProductImage.getImage() != null){
             newImage =readImage(UpdateImageFile);
         }
+
         Updatedata updatedata = new Updatedata();
         if (newId == 0 && newName.equals("") && newQuantity == 0 && newPrice == 0 && newImage== null){
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -411,13 +432,10 @@ public class AppController {
             alert.show();
         }else if (newImage == null){
             updatedata.updateProduct(previousImageByte,newId,newName,newQuantity,newPrice,PreviousID);
-            System.out.println("done using previous image");
-            System.out.println(previousImage);
 
         }else {
             updatedata.updateProduct(newImage,newId,newName,newQuantity,newPrice,PreviousID);
-            System.out.println(newImage);
-            System.out.println("done using new image");
+
         }
         // Update the observable list
         for (StoreData product : productList) {
@@ -451,9 +469,9 @@ public class AppController {
                     product.setProductQuantity(Integer.parseInt(previousQuantity.getText()));
                 }
                 if (newPrice != 0.0) {
-                    product.setProductPrice(newPrice + "$");
+                    product.setPriceAsCurrency(newPrice + "$");
                 }else {
-                    product.setProductPrice(previousPrice.getText() + "$");
+                    product.setPriceAsCurrency(previousPrice.getText() + "$");
                 }
                 break;
             }
@@ -464,6 +482,13 @@ public class AppController {
         updateProductQuantity.clear();
         updateProductPrice.clear();
         updateProductImage.setImage(null);
+        previousId.clear();
+        previousName.clear();
+        previousQuantity.clear();
+        previousPrice.clear();
+        previousImage.setImage(null);
+        selectProductId.clear();
+        selectProductName.clear();
     }
 
 
